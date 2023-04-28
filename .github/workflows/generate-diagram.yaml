@@ -42,9 +42,10 @@ jobs:
       run: |
         eval "$(ssh-agent -s)"
         ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+        ssh-add -l
         mkdir -p ~/.ssh
         echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLR0oGcGOlfd1CryD1fKj" >> ~/.ssh/known_hosts
-    
+   
     - name: Test SSH connection
       run: |
         ssh -T -o StrictHostKeyChecking=accept-new git@github.com
