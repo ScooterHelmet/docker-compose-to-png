@@ -38,24 +38,13 @@ jobs:
       run: |
         ls -la diagrams
 
-    - name: Set up SSH agent
-      run: |
-        eval "$(ssh-agent -s)"
-        ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-        ssh-add -l
-        mkdir -p ~/.ssh
-        echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLR0oGcGOlfd1CryD1fKj" >> ~/.ssh/known_hosts
-   
-    - name: Test SSH connection
-      run: |
-        ssh -T -o StrictHostKeyChecking=accept-new git@github.com
-
-    - name: Commit and push the generated diagram
+    - name: Commit the generated diagram and create a pull request
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git remote set-url origin git@github.com:${{ github.repository }}.git
+        git checkout -b "generated-diagram-${{ env.GUID }}"
         git add diagrams/${{ env.GUID }}.png
-        git commit -m "Generated Docker Compose diagram" -a
-        git push
-
+        git commit -m "Generated Docker Compose diagram"
+        git push --set-upstream origin "generated-diagram-${{ env.GUID }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
