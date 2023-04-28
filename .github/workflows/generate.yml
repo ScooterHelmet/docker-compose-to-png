@@ -1,0 +1,31 @@
+name: Generate Docker Compose Diagram
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docker-compose.yml'
+
+jobs:
+  generate_diagram:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create output directory
+      run: mkdir output
+
+    - name: Generate Docker Compose diagram
+      run: |
+        docker run --rm -it --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/output:/output pmsipilot/docker-compose-viz render -m image -o /output/docker-compose.png
+
+    - name: Commit and push the generated diagram
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add output/docker-compose.png
+        git commit -m "Generated Docker Compose diagram" -a
+        git push
