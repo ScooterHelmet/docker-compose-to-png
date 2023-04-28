@@ -21,14 +21,14 @@ jobs:
         mkdir -p diagrams
 
     - name: Generate GUID
-      id: guid
+      id: gen_guid
       run: |
         guid=$(uuidgen)
         echo "GUID=$guid" >> $GITHUB_ENV
-    
+
     - name: Generate Docker Compose diagram
       run: |
-        docker run --rm --user $(id -u):$(id -g) --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/diagrams:/output pmsipilot/docker-compose-viz render -m image -o /output/${{ steps.guid.outputs.guid }}.png
+        docker run --rm --user $(id -u):$(id -g) --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/diagrams:/output pmsipilot/docker-compose-viz render -m image -o /output/${{ env.GUID }}.png
 
     - name: Print Docker container logs
       run: |
@@ -46,4 +46,3 @@ jobs:
         git add diagrams/${{ env.GUID }}.png
         git commit -m "Generated Docker Compose diagram" -a
         git push
-
