@@ -17,20 +17,25 @@ jobs:
 
     - name: Create output directory
       run: |
-        mkdir -p output
+        mkdir -p diagrams
 
+    - name: Generate GUID
+      id: guid
+      run: |
+        echo "::set-output name=guid::$(uuidgen)"
+    
     - name: Generate Docker Compose diagram
       run: |
-        docker run --rm --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/output:/output pmsipilot/docker-compose-viz render -m image -o /output/docker-compose.png
+        docker run --rm --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/diagrams:/output pmsipilot/docker-compose-viz render -m image -o /output/${{ steps.guid.outputs.guid }}.png
 
     - name: List output directory contents
       run: |
-        ls -la output
+        ls -la diagrams
 
     - name: Commit and push the generated diagram
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add output/docker-compose.png
+        git add diagrams/${{ steps.guid.outputs.guid }}.png
         git commit -m "Generated Docker Compose diagram" -a
         git push
