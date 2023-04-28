@@ -27,7 +27,7 @@ jobs:
     
     - name: Generate Docker Compose diagram
       run: |
-        docker run --rm --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/diagrams:/output pmsipilot/docker-compose-viz render -m image -o /output/${{ steps.guid.outputs.guid }}.png
+        docker run --rm --user $(id -u):$(id -g) --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/diagrams:/output pmsipilot/docker-compose-viz render -m image -o /output/${{ steps.guid.outputs.guid }}.png
 
     - name: Print Docker container logs
       run: |
