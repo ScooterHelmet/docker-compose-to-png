@@ -23,7 +23,8 @@ jobs:
     - name: Generate GUID
       id: guid
       run: |
-        echo "::set-output name=guid::$(uuidgen)"
+        guid=$(uuidgen)
+        echo "GUID=$guid" >> $GITHUB_ENV
     
     - name: Generate Docker Compose diagram
       run: |
@@ -41,6 +42,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add diagrams/${{ steps.guid.outputs.guid }}.png
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git add diagrams/${{ env.GUID }}.png
         git commit -m "Generated Docker Compose diagram" -a
         git push
+
