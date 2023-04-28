@@ -22,7 +22,7 @@ jobs:
 
     - name: Generate Docker Compose diagram
       run: |
-        docker run --rm -it --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/output:/output pmsipilot/docker-compose-viz render -m image -o /output/docker-compose.png
+        docker run --rm --name dcv -v ${{ github.workspace }}/docker-compose.yml:/input/docker-compose.yml -v ${{ github.workspace }}/output:/output pmsipilot/docker-compose-viz render -m image -o /output/docker-compose.png
 
     - name: Commit and push the generated diagram
       run: |
