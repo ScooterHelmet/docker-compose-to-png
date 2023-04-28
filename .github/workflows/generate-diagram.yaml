@@ -1,7 +1,7 @@
 name: Generate Docker Compose Diagram
 
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
@@ -38,13 +38,12 @@ jobs:
       run: |
         ls -la diagrams
 
-    - name: Commit the generated diagram and create a pull request
+    - name: Commit the generated diagram
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git checkout -b "generated-diagram-${{ env.GUID }}"
         git add diagrams/${{ env.GUID }}.png
         git commit -m "Generated Docker Compose diagram"
-        git push --set-upstream origin "generated-diagram-${{ env.GUID }}"
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
